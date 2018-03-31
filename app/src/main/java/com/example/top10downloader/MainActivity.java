@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Checking for the selected option in the menu (25, 10)
         getMenuInflater().inflate(R.menu.feeds_menu, menu);
         if (feedLimit == 10) {
             menu.findItem(R.id.mnu10).setChecked(true);
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Passing in the link for the selected setting in the menu
         int id = item.getItemId();
 
         switch (id) {
@@ -87,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        // Saving the information for state changes
         outState.putString(STATE_URL, feedUrl);
         outState.putInt(STATE_LIMIT, feedLimit);
         super.onSaveInstanceState(outState);
@@ -94,12 +97,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Restoring the information for state changes
         super.onRestoreInstanceState(savedInstanceState);
         feedUrl = savedInstanceState.getString(STATE_URL);
         feedLimit = savedInstanceState.getInt(STATE_LIMIT);
     }
 
     private void downloadUrl(String feedUrl) {
+        // Performing the Async task with the selected option
         if (!feedUrl.equalsIgnoreCase(feedCachedUrl)) {
             Log.d(TAG, "downloadUrl: starting AsyncTask");
             DownloadData downloadData = new DownloadData();
@@ -115,15 +120,11 @@ public class MainActivity extends AppCompatActivity {
         private static final String TAG = "DownloadData";
         @Override
         protected void onPostExecute(String s) {
+            // Parsing the downloaded information
             super.onPostExecute(s);
             Log.d(TAG, "onPostExecute: parameter is " + s);
             ParseApplications parseApplications = new ParseApplications();
             parseApplications.parse(s);
-
-            // Default Adapter for list Views
-//            ArrayAdapter<FeedEntry> arrayAdapter = new ArrayAdapter<FeedEntry>(
-//                    MainActivity.this, R.layout.list_item, parseApplications.getApplications());
-//            listApps.setAdapter(arrayAdapter);
 
             // Custom-made adapter for my List View
             FeedAdapter feedAdapter = new FeedAdapter(MainActivity.this, R.layout.list_record,
@@ -142,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private String downloadXML(String urlPath) {
+            // Opening the connection and getting the info in XML format
             StringBuilder xmlResult = new StringBuilder();
 
             try {
@@ -149,10 +151,7 @@ public class MainActivity extends AppCompatActivity {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 int response = connection.getResponseCode();
                 Log.d(TAG, "downloadXML: The response code was " + response);
-//                InputStream inputStream = connection.getInputStream();
-//                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-//                BufferedReader reader = new BufferedReader(inputStreamReader);
-                // this is how you do those 3 lines in 1 line
+
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
                 int charsRead;
